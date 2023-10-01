@@ -5,9 +5,9 @@ import NoResults from "@/components/shared/NoResults";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
-import { useTheme } from "@/context/ThemeProvider";
+// import { useTheme } from "@/context/ThemeProvider";
 import { getQuestions } from "@/lib/actions/question.action";
-import { UserButton } from "@clerk/nextjs";
+// import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default async function Home() {
