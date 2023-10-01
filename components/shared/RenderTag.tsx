@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React from "react";
 import { Badge } from "../ui/badge";
-import { name } from "postcss/lib/previous-map";
 
 interface Props {
   _id: string;
