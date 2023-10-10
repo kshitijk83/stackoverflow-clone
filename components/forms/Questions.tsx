@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { use, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { Editor } from "@tinymce/tinymce-react";
 import {
   Form,
@@ -17,10 +17,11 @@ import { Input } from "@/components/ui/input";
 import { QuestionsSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Badge } from "./ui/badge";
+import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 const type: any = "create";
 
@@ -31,6 +32,7 @@ interface Props {
 const Questions = ({ user }: Props) => {
   const editorRef = useRef(null);
   const router = useRouter();
+  const { mode } = useTheme();
   const pathname = usePathname();
   const [submitting, setSubmitting] = useState(false);
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -170,6 +172,8 @@ const Questions = ({ user }: Props) => {
                       "codesample | bold italic forecolor | alignleft aligncenter | " +
                       "alignright alignjustify | bullist numlist",
                     content_style: "body { font-family:Inter, font-size:16px }",
+                    skin: mode === "dark" ? "oxide-dark" : "oxide",
+                    content_css: mode === "dark" ? "dark" : "default",
                   }}
                 />
               </FormControl>

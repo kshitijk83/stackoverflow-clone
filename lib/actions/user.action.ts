@@ -5,12 +5,14 @@ import { connectToDatabase } from "../mongoose";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
+  GetUserByIdParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question from "@/database/Question.model";
 
-export async function getUserById(params: any) {
+export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
     const { userId } = params;
@@ -74,6 +76,17 @@ export async function deleteUser(userData: DeleteUserParams) {
     const deletedUser = await User.findByIdAndDelete({ clerkId: user._id });
 
     return deletedUser;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+    const users = await User.find({}).sort({ createdAt: -1 });
+    return { users };
   } catch (err) {
     console.log(err);
     throw err;

@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { ObjectId, Schema } from "mongoose";
 
 import { IUser } from "@/mongodb";
 
@@ -17,8 +17,8 @@ export interface GetAnswersParams {
 }
 
 export interface AnswerVoteParams {
-  answerId: string;
-  userId: string;
+  answerId: ObjectId;
+  userId: ObjectId;
   hasupVoted: boolean;
   hasdownVoted: boolean;
   path: string;
@@ -71,8 +71,8 @@ export interface GetQuestionByIdParams {
 }
 
 export interface QuestionVoteParams {
-  questionId: string;
-  userId: string;
+  questionId: ObjectId;
+  userId: ObjectId;
   hasupVoted: boolean;
   hasdownVoted: boolean;
   path: string;
@@ -136,7 +136,7 @@ export interface UpdateUserParams {
 
 export interface ToggleSaveQuestionParams {
   userId: string;
-  questionId: string;
+  questionId: ObjectId;
   path: string;
 }
 

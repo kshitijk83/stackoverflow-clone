@@ -33,6 +33,7 @@ export default async function Home() {
         />
 
         <Filters
+          placeholder="Theme"
           filters={HomePageFilters}
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           containerClasses="hidden max-md:flex"
@@ -43,7 +44,7 @@ export default async function Home() {
         {questions.length > 0 ? (
           questions.map((question) => (
             <QuestionCard
-              key={question._id}
+              key={question._id.toString()}
               _id={question._id}
               title={question.title}
               tags={question.tags}
