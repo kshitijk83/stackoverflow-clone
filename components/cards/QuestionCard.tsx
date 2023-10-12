@@ -5,13 +5,14 @@ import Metric from "../shared/Metric";
 import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import { ITag } from "@/database/Tag.model";
 import { IUser } from "@/database/User.model";
+import { Schema } from "mongoose";
 
 interface Props {
   _id: string;
   title: string;
   tags: ITag[];
   author: IUser;
-  upvotes: any;
+  upvotes: any[];
   views: number;
   answers: Array<Object>;
   createdAt: Date;
@@ -64,7 +65,7 @@ const QuestionCard = ({
           <Metric
             imgSrc="/assets/icons/like.svg"
             alt="upvotes"
-            value={formatAndDivideNumber(upvotes)}
+            value={formatAndDivideNumber(upvotes.length)}
             title=" Votes"
             textStyles="small-medium text-dark400_light800"
           />
