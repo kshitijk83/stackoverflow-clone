@@ -13,6 +13,7 @@ import {
 import { revalidatePath } from "next/cache";
 import Question, { IQuestion } from "@/database/Question.model";
 import Tag from "@/database/Tag.model";
+import Answer from "@/database/Answer.model";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -124,6 +125,29 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
       throw new Error("User not found");
     }
     return { questions: user.saved };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+    const user = await User.findOne({ clerkId: userId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const totalQuestions = await Question.find({
+      author: user._id,
+    }).countDocuments();
+    const totalAnswers = await Answer.find({
+      author: user._id,
+    }).countDocuments();
+    return { user, totalAnswers, totalQuestions };
   } catch (err) {
     console.log(err);
     throw err;
