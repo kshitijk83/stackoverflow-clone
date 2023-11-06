@@ -14,6 +14,7 @@ export const getTimeStamp = (createdAt: Date): string => {
   const month = 30 * day;
   const year = 365 * day;
 
+  // test
   if (diff < minute) {
     return "just now";
   } else if (diff < hour) {
