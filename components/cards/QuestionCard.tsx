@@ -6,6 +6,8 @@ import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import { ITag } from "@/database/Tag.model";
 import { IUser } from "@/database/User.model";
 import { Schema } from "mongoose";
+import { SignedIn } from "@clerk/nextjs";
+import EditDeleteActions from "../shared/EditDeleteActions";
 
 interface Props {
   _id: string;
@@ -16,10 +18,12 @@ interface Props {
   views: number;
   answers: Array<Object>;
   createdAt: Date;
+  clerkId: string;
 }
 
 const QuestionCard = ({
   _id,
+  clerkId,
   title,
   tags,
   author,
@@ -28,7 +32,7 @@ const QuestionCard = ({
   answers,
   createdAt,
 }: Props) => {
-  console.log(author);
+  const showActionButtons = clerkId && clerkId === author.clerkId;
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -45,6 +49,11 @@ const QuestionCard = ({
             </h3>
           </Link>
         </div>
+        <SignedIn>
+          {showActionButtons && (
+            <EditDeleteActions type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
       <div className="mt-3.5 flex flex-wrap gap-2">
         {tags.map((tag) => (

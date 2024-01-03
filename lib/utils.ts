@@ -49,3 +49,26 @@ export const getMonthAndYear = (date: Date): string => {
   const year = date.getFullYear();
   return `${month} ${year}`;
 };
+
+interface UrlQueryParams {
+  params: any;
+  key: string;
+  value: string | null;
+  pathName: string;
+}
+
+// complete formUrlQuery using URLSearchParams
+export const formUrlQuery = ({
+  params,
+  key,
+  value,
+  pathName,
+}: UrlQueryParams) => {
+  const urlParams = new URLSearchParams(params);
+  if (value === null || value === undefined || value === "") {
+    urlParams.delete(key);
+  } else {
+    urlParams.set(key, value);
+  }
+  return `${pathName}?${urlParams.toString()}`;
+};

@@ -8,11 +8,12 @@ import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   UpdateUserParams,
 } from "./shared.types";
 import { revalidatePath } from "next/cache";
 import Question, { IQuestion } from "@/database/Question.model";
-import Tag from "@/database/Tag.model";
+import Tag, { ITag } from "@/database/Tag.model";
 import Answer from "@/database/Answer.model";
 
 export async function getUserById(params: GetUserByIdParams) {
@@ -148,6 +149,61 @@ export async function getUserInfo(params: GetUserByIdParams) {
       author: user._id,
     }).countDocuments();
     return { user, totalAnswers, totalQuestions };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getUserQuestions(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 2 } = params;
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ views: -1 })
+      .populate<{ tags: ITag[] }>({ path: "tags", model: Tag })
+      .populate<{ author: IUser }>({ path: "author", model: User })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    return {
+      totalQuestions,
+      questions: userQuestions,
+      page,
+      pageSize,
+      isNext: totalQuestions > page * pageSize,
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function getUserAnswers(params: GetUserStatsParams) {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 2 } = params;
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ views: -1 })
+      .populate<{ question: IQuestion[] }>({
+        path: "question",
+        model: Question,
+      })
+      .populate<{ author: IUser }>({ path: "author", model: User })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    return {
+      totalAnswers,
+      answers: userAnswers,
+      page,
+      pageSize,
+      isNext: totalAnswers > page * pageSize,
+    };
   } catch (err) {
     console.log(err);
     throw err;

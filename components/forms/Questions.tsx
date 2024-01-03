@@ -46,7 +46,6 @@ const Questions = ({ user }: Props) => {
 
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setSubmitting(true);
-    console.log(pathname);
     try {
       // make api call
       await createQuestion({

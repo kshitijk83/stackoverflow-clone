@@ -34,7 +34,7 @@
     "html-react-parser": "^4.2.2",
     "lucide-react": "^0.279.0",
     "mongodb": "^6.1.0",
-    "mongoose": "^7.5.3",
+    "mongoose": "^7.5.4",
     "next": "13.5.2",
     "postcss": "8.4.30",
     "prettier": "^3.0.3",

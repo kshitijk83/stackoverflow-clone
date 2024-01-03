@@ -10,7 +10,7 @@ import { formatAndDivideNumber } from "@/lib/utils";
 import { ObjectId } from "mongoose";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import React, { useEffect } from "react";
 
 interface Props {
@@ -35,7 +35,7 @@ const Votes = ({
   hasSaved,
 }: Props) => {
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
   const handleVote = async (action: "upvote" | "downvote") => {
     if (!userId) return;
     try {
@@ -78,6 +78,7 @@ const Votes = ({
   };
 
   useEffect(() => {
+    // this is the main culprit here
     viewQuestion({
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId),
