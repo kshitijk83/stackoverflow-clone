@@ -40,8 +40,8 @@ const Questions = ({ user, type, questionDetails }: Props) => {
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: questionDetails.title || "",
-      explanation: questionDetails.content || "",
+      title: questionDetails?.title || "",
+      explanation: questionDetails?.content || "",
       tags: groupTags || [],
     },
   });
@@ -154,7 +154,7 @@ const Questions = ({ user, type, questionDetails }: Props) => {
                     // @ts-ignore
                     editorRef.current = editor;
                   }}
-                  initialValue={questionDetails.content || ""}
+                  initialValue={questionDetails?.content || ""}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
                   init={{

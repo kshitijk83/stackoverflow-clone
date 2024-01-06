@@ -1,75 +1,13 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import RenderTag from "./RenderTag";
+import { getHotQuestions } from "@/lib/actions/question.action";
+import { getPopularTags } from "@/lib/actions/tag.action";
 
-const topQuestions = [
-  {
-    _id: "1",
-    title:
-      "Would it be appropriate to point out an error in another paper during a referee report?",
-  },
-  {
-    _id: "2",
-    title: "How can an airconditioning machine exist?",
-  },
-  {
-    _id: "3",
-    title: "Interrogated every time crossing UK Border as citizen",
-  },
-  {
-    _id: "4",
-    title: "Low digit addition generator",
-  },
-  {
-    _id: "5",
-    title: "What is an example of 3 numbers that do not make up a vector?",
-  },
-];
-
-// give me array of objects for popular tags section having tag, count property for top tags used in questions
-
-const popularTags = [
-  {
-    _id: "1",
-    name: "JavaScript",
-    totalQuestions: 3000,
-  },
-  {
-    _id: "2",
-    name: "Next.JS",
-    totalQuestions: 345,
-  },
-  {
-    _id: "3",
-    name: "React.JS",
-    totalQuestions: 123,
-  },
-  {
-    _id: "4",
-    name: "Node.JS",
-    totalQuestions: 111,
-  },
-  {
-    _id: "5",
-    name: "Python",
-    totalQuestions: 1,
-  },
-  {
-    _id: "6",
-    name: "Microsoft Azure",
-    totalQuestions: 3,
-  },
-  {
-    _id: "7",
-    name: "Machine Learning",
-    totalQuestions: 33,
-  },
-];
-
-const RightSideBar = () => {
+const RightSideBar = async () => {
+  const topQuestions = await getHotQuestions();
+  const popularTags = await getPopularTags();
   return (
     <section
       className="background-light900_dark200 light-border custom-scrollbar sticky
@@ -82,8 +20,8 @@ const RightSideBar = () => {
         <div className=" mt-7 flex w-full flex-col gap-[30px]">
           {topQuestions.map((item) => (
             <Link
-              href={`/questions/${item._id}`}
-              key={item._id}
+              href={`/question/${item._id.toString()}`}
+              key={item._id.toString()}
               className="flex cursor-pointer items-center justify-between gap-7"
             >
               <p className="body-medium text-dark500_light700">{item.title}</p>
@@ -106,7 +44,7 @@ const RightSideBar = () => {
               key={item._id}
               _id={item._id}
               name={item.name}
-              totalQuestions={item.totalQuestions}
+              totalQuestions={item.numOfQuestions}
               showCount
             />
           ))}
