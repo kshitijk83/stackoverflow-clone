@@ -70,7 +70,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         <Metric
           imgSrc="/assets/icons/clock.svg"
           alt="clock icon"
-          value={` asked ${getTimeStamp(question!.createdAt)}`}
+          value={` asked ${getTimeStamp(new Date(question!.createdAt))}`}
           title=" Asked"
           textStyles="small-medium text-dark400_light800"
         />
@@ -101,7 +101,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         ))}
       </div>
       <AllAnswers
-        questionId={JSON.stringify(question!.id)}
+        questionId={question!._id}
         userId={JSON.stringify(mongoUser!._id)}
         totalAnswers={question!.answers.length}
       />

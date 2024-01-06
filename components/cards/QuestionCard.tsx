@@ -51,7 +51,7 @@ const QuestionCard = ({
         </div>
         <SignedIn>
           {showActionButtons && (
-            <EditDeleteActions type="Question" itemId={JSON.stringify(_id)} />
+            <EditDeleteActions type="Question" itemId={_id} />
           )}
         </SignedIn>
       </div>

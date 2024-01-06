@@ -25,7 +25,7 @@ const AllAnswers = async ({
   page,
 }: Props) => {
   const { answers } = await getAnswers({
-    questionId: JSON.parse(questionId),
+    questionId,
   });
   return (
     <div className="mt-11">

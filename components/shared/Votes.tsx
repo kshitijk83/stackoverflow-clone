@@ -78,11 +78,10 @@ const Votes = ({
   };
 
   useEffect(() => {
-    // this is the main culprit here
-    viewQuestion({
-      questionId: JSON.parse(itemId),
-      userId: JSON.parse(userId),
-    });
+    // viewQuestion({
+    //   questionId: JSON.parse(itemId),
+    //   userId: JSON.parse(userId),
+    // });
   }, [itemId, userId, pathname, router]);
 
   return (

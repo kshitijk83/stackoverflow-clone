@@ -1,4 +1,3 @@
-/* eslint-disable no-import-assign */
 import mongoose from "mongoose";
 
 let isConnected: boolean = false;

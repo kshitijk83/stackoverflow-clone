@@ -6,6 +6,7 @@ import Tag, { ITag } from "@/database/Tag.model";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -79,12 +80,11 @@ export async function createQuestion(params: CreateQuestionParams) {
 export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
     connectToDatabase();
-
     const { questionId } = params;
     const question = await Question.findById(questionId)
       .populate<{ tags: ITag[] }>({ path: "tags", model: Tag })
       .populate<{ author: IUser }>({ path: "author", model: User });
-    return { question };
+    return { question: JSON.parse(JSON.stringify(question)) };
   } catch (err) {
     console.log(err);
     throw err;
@@ -258,6 +258,30 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
       { questions: questionId },
       { $pull: { questions: questionId } }
     );
+
+    revalidatePath(path);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path, content, title } = params;
+
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("Question not found");
+    }
+
+    question.title = title;
+    question.content = content;
+
+    question.save();
 
     revalidatePath(path);
   } catch (err) {

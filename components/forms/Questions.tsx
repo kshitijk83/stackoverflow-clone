@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Editor } from "@tinymce/tinymce-react";
@@ -19,34 +19,45 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
-
-const type: any = "create";
+import router from "next/router";
 
 interface Props {
   user: string;
+  type?: "Edit" | "Create";
+  questionDetails?: any;
 }
 
-const Questions = ({ user }: Props) => {
+const Questions = ({ user, type, questionDetails }: Props) => {
   const editorRef = useRef(null);
   const router = useRouter();
   const { mode } = useTheme();
   const pathname = usePathname();
   const [submitting, setSubmitting] = useState(false);
+  const groupTags = questionDetails?.tags.map((tag) => tag.name);
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: questionDetails.title || "",
+      explanation: questionDetails.content || "",
+      tags: groupTags || [],
     },
   });
 
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setSubmitting(true);
     try {
+      if (type === "Edit") {
+        await editQuestion({
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+          questionId: questionDetails._id,
+        });
+        router.push(`/question/${questionDetails._id}`);
+      }
       // make api call
       await createQuestion({
         title: values.title,
@@ -143,7 +154,7 @@ const Questions = ({ user }: Props) => {
                     // @ts-ignore
                     editorRef.current = editor;
                   }}
-                  initialValue=""
+                  initialValue={questionDetails.content || ""}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
                   init={{
@@ -196,6 +207,7 @@ const Questions = ({ user }: Props) => {
               <FormControl className="mt-3.5">
                 <>
                   <Input
+                    disabled={type === "Edit"}
                     className="no-focus paragraph-regular background-light900_dark300
                 light-border-2 text-dark300_light700 min-h-[56px] border"
                     placeholder="Add Tags..."
@@ -208,16 +220,22 @@ const Questions = ({ user }: Props) => {
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center
                         justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                          onClick={() => handleTagRemove(tag, field)}
+                          onClick={() =>
+                            type !== "Edit"
+                              ? handleTagRemove(tag, field)
+                              : () => {}
+                          }
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="Close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain dark:invert"
-                          />
+                          {type !== "Edit" && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
@@ -234,9 +252,9 @@ const Questions = ({ user }: Props) => {
         />
         <Button type="submit" className="w-fit bg-primary-500 text-light-900">
           {submitting ? (
-            <>{type === "edit" ? "Editing..." : "Posting..."}</>
+            <>{type === "Edit" ? "Editing..." : "Posting..."}</>
           ) : (
-            <>{type === "edit" ? "Edit" : "Ask a Question"}</>
+            <>{type === "Edit" ? "Edit" : "Ask a Question"}</>
           )}
         </Button>
       </form>

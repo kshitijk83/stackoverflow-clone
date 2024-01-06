@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -26,6 +26,7 @@
     "babel-plugin-prismjs": "^2.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "8.50.0",
     "eslint-config-next": "13.5.2",
     "eslint-config-prettier": "^9.0.0",
@@ -35,7 +36,7 @@
     "lucide-react": "^0.279.0",
     "mongodb": "^6.1.0",
     "mongoose": "^7.5.4",
-    "next": "13.5.2",
+    "next": "^14.0.4",
     "postcss": "8.4.30",
     "prettier": "^3.0.3",
     "prismjs": "1.24.0",

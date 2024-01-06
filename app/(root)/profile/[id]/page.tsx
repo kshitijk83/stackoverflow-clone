@@ -39,8 +39,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
               {user.portfolioWebsite && (
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
-                  // href={user.portfolioWebsite}
-                  href={"https://www.google.com"}
+                  href={user.portfolioWebsite}
                   title="Portfolio"
                 />
               )}

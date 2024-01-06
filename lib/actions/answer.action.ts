@@ -45,6 +45,7 @@ export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
     const { questionId } = params;
+    console.log(questionId);
     const answers = await Answer.find({
       question: Types.ObjectId.createFromHexString(questionId),
     })
