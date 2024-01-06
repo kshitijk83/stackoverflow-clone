@@ -125,7 +125,7 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
     if (!user) {
       throw new Error("User not found");
     }
-    return { questions: user.saved };
+    return { questions: user.saved as any };
   } catch (err) {
     console.log(err);
     throw err;
