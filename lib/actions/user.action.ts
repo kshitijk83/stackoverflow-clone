@@ -15,6 +15,7 @@ import { revalidatePath } from "next/cache";
 import Question, { IQuestion } from "@/database/Question.model";
 import Tag, { ITag } from "@/database/Tag.model";
 import Answer from "@/database/Answer.model";
+import { FilterQuery } from "mongoose";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -89,7 +90,17 @@ export async function deleteUser(userData: DeleteUserParams) {
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
-    const users = await User.find({}).sort({ createdAt: -1 });
+    const { searchQuery } = params;
+
+    const query: FilterQuery<IUser> = {};
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { username: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
     return { users };
   } catch (err) {
     console.log(err);
@@ -101,12 +112,18 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
     const { clerkId, filter, page, pageSize, searchQuery } = params;
+
     const user = await User.findOne({ clerkId }).populate<{
       saved: (Omit<IQuestion, "author"> & { author: IUser })[];
     }>({
       path: "saved",
       match: searchQuery
-        ? { title: { $regex: searchQuery, $options: "i" } }
+        ? {
+            $or: [
+              { title: { $regex: searchQuery, $options: "i" } },
+              { content: { $regex: searchQuery, $options: "i" } },
+            ],
+          }
         : {},
       options: {
         sort: { createdAt: -1 },

@@ -5,11 +5,12 @@ import NoResults from "@/components/shared/NoResults";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
+import { SearchParamsProps } from "@/types";
 import { Link } from "lucide-react";
 import React from "react";
 
-const TagsPage = async () => {
-  const { tags } = await getAllTags({});
+const TagsPage = async ({ searchParams }: SearchParamsProps) => {
+  const { tags } = await getAllTags({ searchQuery: searchParams.q });
 
   return (
     <div className="flex flex-col gap-12">

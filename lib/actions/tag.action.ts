@@ -9,6 +9,7 @@ import {
 } from "./shared.types";
 import Tag, { ITag } from "@/database/Tag.model";
 import Question, { IQuestion } from "@/database/Question.model";
+import { FilterQuery } from "mongoose";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -37,7 +38,18 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const tags = await Tag.find({}).sort({ createdAt: -1 });
+    const { searchQuery } = params;
+
+    const filter: FilterQuery<ITag> = {};
+
+    if (searchQuery) {
+      filter.$or = [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { description: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const tags = await Tag.find(filter).sort({ createdAt: -1 });
 
     return { tags };
   } catch (err) {

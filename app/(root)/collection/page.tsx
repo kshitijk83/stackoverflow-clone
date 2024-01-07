@@ -8,15 +8,17 @@ import { HomePageFilters, QuestionFilters } from "@/constants/filters";
 // import { useTheme } from "@/context/ThemeProvider";
 import { getQuestions } from "@/lib/actions/question.action";
 import { getAllSavedQuestion } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 // import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
-export default async function Collection() {
+export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) return null;
   const { questions } = await getAllSavedQuestion({
     clerkId: userId,
+    searchQuery: searchParams.q,
   });
 
   return (
@@ -25,7 +27,7 @@ export default async function Collection() {
 
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/"
+          route="/collection"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           placeholder="Search for Questions"
@@ -44,7 +46,7 @@ export default async function Collection() {
           questions.map((question) => (
             <QuestionCard
               key={question._id.toString()}
-              _id={question._id}
+              _id={question._id.toString()}
               title={question.title}
               tags={question.tags}
               author={question.author}

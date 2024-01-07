@@ -1,6 +1,7 @@
 "use server";
 
 import Question from "@/database/Question.model";
+import { FilterQuery } from "mongoose";
 import { connectToDatabase } from "../mongoose";
 import Tag, { ITag } from "@/database/Tag.model";
 import {
@@ -20,7 +21,18 @@ import Interaction from "@/database/Interaction.model";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const questions = await Question.find()
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof Question> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const questions = await Question.find(query)
       .populate<{ tags: ITag[] }>({ path: "tags", model: Tag })
       .populate<{ author: IUser }>({ path: "author", model: User })
       .sort({ createdAt: -1 });

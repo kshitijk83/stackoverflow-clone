@@ -3,11 +3,14 @@ import Filters from "@/components/shared/Filters";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 import React from "react";
 
-const CommunityPage = async () => {
-  const { users } = await getAllUsers({});
+const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
+  const { users } = await getAllUsers({
+    searchQuery: searchParams.q,
+  });
   return (
     <div className="flex flex-col gap-12">
       <h1 className="h1-bold text-dark100_light900">All Users</h1>

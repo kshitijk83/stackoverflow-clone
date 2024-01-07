@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 // import { useTheme } from "@/context/ThemeProvider";
 import { getQuestions } from "@/lib/actions/question.action";
+import { SearchParamsProps } from "@/types";
 // import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
-export default async function Home() {
-  const { questions } = await getQuestions({});
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const { questions } = await getQuestions({
+    searchQuery: searchParams.q,
+  });
 
   return (
     <>
