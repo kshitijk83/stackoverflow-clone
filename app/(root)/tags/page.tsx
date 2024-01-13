@@ -10,7 +10,10 @@ import { Link } from "lucide-react";
 import React from "react";
 
 const TagsPage = async ({ searchParams }: SearchParamsProps) => {
-  const { tags } = await getAllTags({ searchQuery: searchParams.q });
+  const { tags } = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <div className="flex flex-col gap-12">

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Select,
@@ -7,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { formUrlQuery2 } from "@/lib/utils";
 
 interface Props {
   filters: { name: string; value: string }[];
@@ -21,9 +25,24 @@ const Filters = ({
   containerClasses,
   placeholder,
 }: Props) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const filter = searchParams.get("filter");
+  function handleUpdateValue(value) {
+    const url = formUrlQuery2({
+      key: "filter",
+      value,
+      params: searchParams.toString(),
+      path: pathname,
+    });
+    router.push(url, { scroll: false });
+  }
+
   return (
     <div className={`relative ${containerClasses}`}>
-      <Select>
+      <Select onValueChange={handleUpdateValue} value={filter || undefined}>
         <SelectTrigger
           className={`${otherClasses}
         body-regular light-border background-light800_dark300

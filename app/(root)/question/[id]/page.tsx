@@ -8,13 +8,20 @@ import { viewQuestion } from "@/lib/actions/interaction.action";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
+import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 
-const Page = async ({ params }: { params: { id: string } }) => {
+const Page = async ({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: SearchParamsProps;
+}) => {
   const { question } = await getQuestionById({ questionId: params.id });
 
   const { userId: clerkId } = auth();
@@ -104,6 +111,8 @@ const Page = async ({ params }: { params: { id: string } }) => {
         questionId={question!._id}
         userId={JSON.stringify(mongoUser!._id)}
         totalAnswers={question!.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page}
       />
       <Answer
         userId={mongoUser!._id.toString()}

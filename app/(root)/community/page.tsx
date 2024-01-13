@@ -10,6 +10,7 @@ import React from "react";
 const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
   const { users } = await getAllUsers({
     searchQuery: searchParams.q,
+    filter: searchParams.filter,
   });
   return (
     <div className="flex flex-col gap-12">
