@@ -12,6 +12,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import router, { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
 interface Props {
   type: "answer" | "question";
@@ -37,7 +38,12 @@ const Votes = ({
   const pathname = usePathname();
   // const router = useRouter();
   const handleVote = async (action: "upvote" | "downvote") => {
-    if (!userId) return;
+    if (!userId) {
+      return toast({
+        title: "error",
+        description: "You must be logged in to vote",
+      });
+    }
     try {
       if (type === "answer") {
         await voteAnswer({
@@ -48,6 +54,10 @@ const Votes = ({
           hasupVoted: hasUpvoted,
           path: pathname,
         });
+        return toast({
+          title: `Upvote ${!hasUpvoted ? "added" : "removed"}`,
+          variant: !hasUpvoted ? "default" : "destructive",
+        });
       } else if (type === "question") {
         await voteQuestion({
           questionId: JSON.parse(itemId),
@@ -56,6 +66,10 @@ const Votes = ({
           hasdownVoted: hasDownvoted,
           hasupVoted: hasUpvoted,
           path: pathname,
+        });
+        return toast({
+          title: `Downvote ${!hasDownvoted ? "added" : "removed"}`,
+          variant: !hasDownvoted ? "default" : "destructive",
         });
       }
     } catch (err) {
@@ -71,6 +85,12 @@ const Votes = ({
         path: pathname,
         questionId: JSON.parse(itemId),
         userId: JSON.parse(userId),
+      });
+      return toast({
+        title: `Question ${
+          !hasSaved ? "Saved in" : "Removed from"
+        } your collection`,
+        variant: !hasSaved ? "default" : "destructive",
       });
     } catch (err) {
       console.log(err);
