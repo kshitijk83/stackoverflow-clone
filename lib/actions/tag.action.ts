@@ -38,7 +38,7 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
 
     const filterQuery: FilterQuery<ITag> = {};
 
@@ -71,9 +71,15 @@ export async function getAllTags(params: GetAllTagsParams) {
         break;
     }
 
-    const tags = await Tag.find(filterQuery).sort(sortOptions);
+    const tags = await Tag.find(filterQuery)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort(sortOptions);
 
-    return { tags };
+    const totalTags = await Tag.countDocuments(filterQuery);
+    const isNext = page * pageSize < totalTags;
+
+    return { tags, isNext };
   } catch (err) {
     console.log(err);
     throw err;

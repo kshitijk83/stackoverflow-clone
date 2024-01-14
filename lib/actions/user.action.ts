@@ -90,7 +90,7 @@ export async function deleteUser(userData: DeleteUserParams) {
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
 
     const query: FilterQuery<IUser> = {};
     if (searchQuery) {
@@ -118,8 +118,14 @@ export async function getAllUsers(params: GetAllUsersParams) {
       default:
         break;
     }
-    const users = await User.find(query).sort(sortOptions);
-    return { users };
+    const users = await User.find(query)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .sort(sortOptions);
+
+    const totalUsers = await User.countDocuments(query);
+    const isNext = page * pageSize < totalUsers;
+    return { users, isNext };
   } catch (err) {
     console.log(err);
     throw err;
@@ -129,7 +135,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
   try {
     connectToDatabase();
-    const { clerkId, filter, page, pageSize, searchQuery } = params;
+    const { clerkId, filter, page = 1, pageSize = 2, searchQuery } = params;
 
     let sortOptions = {};
 
@@ -169,6 +175,8 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
           }
         : {},
       options: {
+        skip: (page - 1) * pageSize,
+        limit: pageSize,
         sort: sortOptions,
       },
       populate: [
@@ -185,7 +193,8 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
     if (!user) {
       throw new Error("User not found");
     }
-    return { questions: user.saved as any };
+    const isNext = user.saved.length === pageSize;
+    return { questions: user.saved as any, isNext };
   } catch (err) {
     console.log(err);
     throw err;

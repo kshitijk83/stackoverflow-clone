@@ -8,6 +8,7 @@ import { getTimeStamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Votes from "./Votes";
 import { ObjectId } from "mongoose";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -24,7 +25,7 @@ const AllAnswers = async ({
   filter,
   page,
 }: Props) => {
-  const { answers } = await getAnswers({
+  const { answers, isNext } = await getAnswers({
     questionId,
     sortBy: filter,
     page: page ? +page : 1,
@@ -88,6 +89,9 @@ const AllAnswers = async ({
             <ParseHTML data={answer.content} />
           </article>
         ))}
+      </div>
+      <div className="mt-8 w-full">
+        <Pagination pageNumber={page ? +page : 1} isNext={isNext} />
       </div>
     </div>
   );

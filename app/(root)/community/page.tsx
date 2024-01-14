@@ -1,5 +1,6 @@
 import UserCard from "@/components/cards/UserCard";
 import Filters from "@/components/shared/Filters";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { UserFilters } from "@/constants/filters";
 import { getAllUsers } from "@/lib/actions/user.action";
@@ -8,9 +9,10 @@ import Link from "next/link";
 import React from "react";
 
 const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
-  const { users } = await getAllUsers({
+  const { users, isNext } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
   return (
     <div className="flex flex-col gap-12">
@@ -48,6 +50,10 @@ const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
           </div>
         )}
       </section>
+      <Pagination
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+        isNext={isNext}
+      />
     </div>
   );
 };

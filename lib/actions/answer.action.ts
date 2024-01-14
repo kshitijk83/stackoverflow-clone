@@ -44,7 +44,7 @@ export async function createAnswer(params: CreateAnswerParams) {
 export async function getAnswers(params: GetAnswersParams) {
   try {
     connectToDatabase();
-    const { questionId, sortBy } = params;
+    const { questionId, sortBy, page = 1, pageSize = 2 } = params;
 
     let sortOptions = {};
 
@@ -74,9 +74,16 @@ export async function getAnswers(params: GetAnswersParams) {
       .populate<{
         author: IUser;
       }>({ path: "author", model: "User" })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
       .sort(sortOptions);
 
-    return { answers };
+    const totalAnswers = await Answer.countDocuments({
+      question: Types.ObjectId.createFromHexString(questionId),
+    });
+    const isNext = page * pageSize < totalAnswers;
+
+    return { answers, isNext };
   } catch (err) {
     console.log(err);
     throw err;

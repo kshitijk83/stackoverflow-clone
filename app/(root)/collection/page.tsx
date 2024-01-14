@@ -2,6 +2,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilters from "@/components/home/HomeFilters";
 import Filters from "@/components/shared/Filters";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters, QuestionFilters } from "@/constants/filters";
@@ -16,10 +17,11 @@ import Link from "next/link";
 export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) return null;
-  const { questions } = await getAllSavedQuestion({
+  const { questions, isNext } = await getAllSavedQuestion({
     clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -69,6 +71,10 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
+      <Pagination
+        isNext={isNext}
+        pageNumber={searchParams.page ? +searchParams.page : 1}
+      />
     </>
   );
 }

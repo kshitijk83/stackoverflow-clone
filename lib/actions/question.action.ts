@@ -21,7 +21,7 @@ import Interaction from "@/database/Interaction.model";
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -47,12 +47,18 @@ export async function getQuestions(params: GetQuestionsParams) {
         break;
     }
 
+    const totalQuestions = await Question.countDocuments(query);
+
     const questions = await Question.find(query)
       .populate<{ tags: ITag[] }>({ path: "tags", model: Tag })
       .populate<{ author: IUser }>({ path: "author", model: User })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
       .sort(sortOptions);
 
-    return { questions };
+    const isNext = page * pageSize < totalQuestions;
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
