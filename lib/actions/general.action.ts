@@ -27,6 +27,7 @@ export const globalSearch = async (params: SearchParams) => {
       // search everything
       for (const { model, searchField, type } of modelsAndTypes) {
         const queryResults = await model
+          // @ts-ignore
           .find({ [searchField]: regexQuery })
           .limit(2);
         results.push(
@@ -52,6 +53,7 @@ export const globalSearch = async (params: SearchParams) => {
       }
 
       const queryResults = await modelInfo.model
+        // @ts-ignore
         .find({ [modelInfo.searchField]: regexQuery })
         .limit(2);
 

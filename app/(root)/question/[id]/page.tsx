@@ -17,7 +17,7 @@ import React from "react";
 
 const Page = async ({
   params,
-  searchParams,
+  searchParams: { searchParams },
 }: {
   params: { id: string };
   searchParams: SearchParamsProps;
@@ -112,7 +112,7 @@ const Page = async ({
         userId={JSON.stringify(mongoUser!._id)}
         totalAnswers={question!.answers.length}
         filter={searchParams?.filter}
-        page={searchParams?.page}
+        page={searchParams?.page ? +searchParams.page : 1}
       />
       <Answer
         userId={mongoUser!._id.toString()}
