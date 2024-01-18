@@ -39,7 +39,7 @@ const CommunityPage = async ({ searchParams }: SearchParamsProps) => {
 
 export default CommunityPage;
 
-export async function QuestionList({ searchParams }) {
+async function QuestionList({ searchParams }: SearchParamsProps) {
   const { users, isNext } = await getAllUsers({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
