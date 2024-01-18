@@ -10,6 +10,8 @@ import {
 import Tag, { ITag } from "@/database/Tag.model";
 import Question, { IQuestion } from "@/database/Question.model";
 import { FilterQuery } from "mongoose";
+import { Timer } from "lucide-react";
+import { timer } from "../utils";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -38,7 +40,7 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery, filter, page = 1, pageSize = 2 } = params;
+    const { searchQuery, filter, page = 1, pageSize = 3 } = params;
 
     const filterQuery: FilterQuery<ITag> = {};
 
@@ -79,6 +81,7 @@ export async function getAllTags(params: GetAllTagsParams) {
     const totalTags = await Tag.countDocuments(filterQuery);
     const isNext = page * pageSize < totalTags;
 
+    await timer(3000);
     return { tags, isNext };
   } catch (err) {
     console.log(err);
@@ -147,7 +150,7 @@ export async function getPopularTags() {
         $limit: 5,
       },
     ]);
-    console.log(popularTags);
+    await timer(3000);
     return popularTags;
   } catch (err) {
     console.log(err);

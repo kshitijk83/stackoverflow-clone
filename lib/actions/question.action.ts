@@ -17,6 +17,7 @@ import User, { IUser } from "@/database/User.model";
 import { revalidatePath } from "next/cache";
 import Answer from "@/database/Answer.model";
 import Interaction from "@/database/Interaction.model";
+import { timer } from "../utils";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -57,7 +58,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       .sort(sortOptions);
 
     const isNext = page * pageSize < totalQuestions;
-
+    await timer(5000);
     return { questions, isNext };
   } catch (error) {
     console.log(error);
@@ -330,7 +331,7 @@ export async function getHotQuestions() {
     const question = await Question.find({})
       .sort({ views: -1, upvotes: -1 })
       .limit(5);
-
+    await timer(3000);
     return question;
   } catch (err) {
     console.log(err);

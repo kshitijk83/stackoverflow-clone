@@ -29,11 +29,6 @@ const Loading = () => {
         <Skeleton className="h-9 w-40" />
         <Skeleton className="h-9 w-40" />
       </div>
-      <div className="flex flex-col gap-6">
-        {[1, 2, 3, 4].map((item) => (
-          <Skeleton key={item} className="h-48 w-full rounded-xl" />
-        ))}
-      </div>
     </section>
   );
 };

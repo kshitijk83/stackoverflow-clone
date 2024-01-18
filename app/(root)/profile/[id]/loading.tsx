@@ -31,35 +31,39 @@ const Loading = () => {
           <Skeleton className="h-28 rounded-md" />
         </div>
       </div>
-
-      <div className="mt-10 flex gap-10">
-        <div className="flex flex-1 flex-col">
-          <div className="flex">
-            <Skeleton className="h-11 w-24 rounded-r-none" />
-            <Skeleton className="h-11 w-24 rounded-l-none" />
-          </div>
-
-          <div className="mt-5 flex w-full flex-col gap-6">
-            {[1, 2, 3, 4, 5].map((item) => (
-              <Skeleton key={item} className="h-48 w-full rounded-xl" />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex min-w-[278px] flex-col max-lg:hidden">
-          <Skeleton className="h-7 w-10" />
-
-          <div className="mt-7 flex flex-col gap-4">
-            <Skeleton className="h-7" />
-            <Skeleton className="h-7" />
-            <Skeleton className="h-7" />
-            <Skeleton className="h-7" />
-            <Skeleton className="h-7" />
-          </div>
-        </div>
-      </div>
     </section>
   );
 };
 
 export default Loading;
+
+export const LoadingProfileQuestions = () => {
+  return (
+    <div className="mt-10 flex gap-10">
+      <div className="flex flex-1 flex-col">
+        <div className="flex">
+          <Skeleton className="h-11 w-24 rounded-r-none" />
+          <Skeleton className="h-11 w-24 rounded-l-none" />
+        </div>
+
+        <div className="mt-5 flex w-full flex-col gap-6">
+          {[1].map((item) => (
+            <Skeleton key={item} className="h-48 w-full rounded-xl" />
+          ))}
+        </div>
+      </div>
+
+      {/* <div className="flex min-w-[278px] flex-col max-lg:hidden">
+      <Skeleton className="h-7 w-10" />
+
+      <div className="mt-7 flex flex-col gap-4">
+        <Skeleton className="h-7" />
+        <Skeleton className="h-7" />
+        <Skeleton className="h-7" />
+        <Skeleton className="h-7" />
+        <Skeleton className="h-7" />
+      </div>
+    </div> */}
+    </div>
+  );
+};

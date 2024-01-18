@@ -3,7 +3,7 @@ import { getUserInfo } from "@/lib/actions/user.action";
 import { URLProps } from "@/types";
 import { SignedIn, auth } from "@clerk/nextjs";
 import Image from "next/image";
-import React from "react";
+import React, { Suspense } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getMonthAndYear } from "@/lib/utils";
 import ProfileLink from "@/components/shared/ProfileLink";
@@ -11,12 +11,15 @@ import Stats from "@/components/shared/Stats";
 import Link from "next/link";
 import QuestionsTab from "@/components/shared/QuestionsTab";
 import AnswersTab from "@/components/shared/AnswersTab";
+import { LoadingProfileQuestions } from "./loading";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId } = auth();
   const { user, totalAnswers, totalQuestions } = await getUserInfo({
     userId: params.id,
   });
+
+  // return <LoadingProfileQuestions />;
 
   return (
     <>
@@ -75,32 +78,34 @@ const Page = async ({ params, searchParams }: URLProps) => {
         </div>
       </div>
       <Stats totalAnswers={totalAnswers} totalQuestions={totalQuestions} />
-      <div className="mt-10 flex gap-10">
-        <Tabs defaultValue="top-posts" className="flex-1">
-          <TabsList className="background-light800_dark400 min-h-[42px] p-1">
-            <TabsTrigger value="top-posts" className="tab">
-              Top Posts
-            </TabsTrigger>
-            <TabsTrigger value="answers" className="tab">
-              Answers
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="top-posts">
-            <QuestionsTab
-              clerkId={user.clerkId}
-              searchParams={searchParams}
-              userId={user._id}
-            />
-          </TabsContent>
-          <TabsContent value="answers" className="flex w-full flex-col gap-6">
-            <AnswersTab
-              clerkId={user.clerkId}
-              searchParams={searchParams}
-              userId={user._id}
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
+      <Suspense fallback={<LoadingProfileQuestions />}>
+        <div className="mt-10 flex gap-10">
+          <Tabs defaultValue="top-posts" className="flex-1">
+            <TabsList className="background-light800_dark400 min-h-[42px] p-1">
+              <TabsTrigger value="top-posts" className="tab">
+                Top Posts
+              </TabsTrigger>
+              <TabsTrigger value="answers" className="tab">
+                Answers
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="top-posts">
+              <QuestionsTab
+                clerkId={user.clerkId}
+                searchParams={searchParams}
+                userId={user._id}
+              />
+            </TabsContent>
+            <TabsContent value="answers" className="flex w-full flex-col gap-6">
+              <AnswersTab
+                clerkId={user.clerkId}
+                searchParams={searchParams}
+                userId={user._id}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </Suspense>
     </>
   );
 };

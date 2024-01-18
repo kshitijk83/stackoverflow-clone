@@ -13,16 +13,13 @@ import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
 // import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { Suspense } from "react";
+import { QuestionListLoading } from "../community/loading";
+import QuestionList from "@/components/shared/skeletons/QuestionList";
 
 export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) return null;
-  const { questions, isNext } = await getAllSavedQuestion({
-    clerkId: userId,
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
 
   return (
     <>
@@ -44,6 +41,25 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
         />
       </div>
 
+      <Suspense
+        key={searchParams.q + searchParams.filter}
+        fallback={<QuestionList />}
+      >
+        <QuestionListCon searchParams={searchParams} userId={userId} />
+      </Suspense>
+    </>
+  );
+}
+
+async function QuestionListCon({ searchParams, userId }) {
+  const { questions, isNext } = await getAllSavedQuestion({
+    clerkId: userId,
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+  });
+  return (
+    <>
       <div className="mt-10 flex flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (

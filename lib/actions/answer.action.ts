@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { IUser } from "@/database/User.model";
 import { Types } from "mongoose";
 import Interaction from "@/database/Interaction.model";
+import { timer } from "../utils";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -82,7 +83,7 @@ export async function getAnswers(params: GetAnswersParams) {
       question: Types.ObjectId.createFromHexString(questionId),
     });
     const isNext = page * pageSize < totalAnswers;
-
+    await timer(3000);
     return { answers, isNext };
   } catch (err) {
     console.log(err);

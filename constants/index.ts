@@ -1,4 +1,11 @@
 import { SidebarLink } from "@/types";
+import home from "../public/assets/icons/home.svg";
+import users from "../public/assets/icons/users.svg";
+import star from "../public/assets/icons/star.svg";
+import suitcase from "../public/assets/icons/suitcase.svg";
+import tag from "../public/assets/icons/tag.svg";
+import user from "../public/assets/icons/user.svg";
+import question from "../public/assets/icons/question.svg";
 
 export const themes = [
   { value: "light", label: "Light", icon: "/assets/icons/sun.svg" },

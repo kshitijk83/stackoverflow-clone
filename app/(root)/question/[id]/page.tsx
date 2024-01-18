@@ -1,5 +1,6 @@
 import Answer from "@/components/forms/Answer";
 import AllAnswers from "@/components/shared/AllAnswers";
+import LoadingImage from "@/components/shared/Image";
 import Metric from "@/components/shared/Metric";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
@@ -13,7 +14,8 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import React from "react";
+import React, { Suspense } from "react";
+import Loading, { AllAnswersLoading, AnswerLoading } from "./loading";
 
 const Page = async ({
   params,
@@ -42,7 +44,7 @@ const Page = async ({
             href={`/profile/${question?.author.clerkId}`}
             className="flex items-center justify-start gap-1"
           >
-            <Image
+            <LoadingImage
               src={question?.author.avatar || "/assets/images/avatar.png"}
               className="rounded-full"
               width={22}
@@ -107,17 +109,21 @@ const Page = async ({
           />
         ))}
       </div>
-      <AllAnswers
-        questionId={question!._id}
-        userId={JSON.stringify(mongoUser!._id)}
-        totalAnswers={question!.answers.length}
-        filter={searchParams?.filter}
-        page={searchParams?.page ? +searchParams.page : 1}
-      />
-      <Answer
-        userId={mongoUser!._id.toString()}
-        questionId={question!._id.toString()}
-      />
+      <Suspense fallback={<AllAnswersLoading />}>
+        <AllAnswers
+          questionId={question!._id}
+          userId={JSON.stringify(mongoUser!._id)}
+          totalAnswers={question!.answers.length}
+          filter={searchParams?.filter}
+          page={searchParams?.page ? +searchParams.page : 1}
+        />
+      </Suspense>
+      <Suspense fallback={<AnswerLoading />}>
+        <Answer
+          userId={mongoUser!._id.toString()}
+          questionId={question!._id.toString()}
+        />
+      </Suspense>
     </>
   );
 };

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { Button } from "../ui/button";
+import LoadingImage from "./Image";
 
 const LeftSideBar = () => {
   const { userId } = useAuth();
@@ -38,9 +39,9 @@ const LeftSideBar = () => {
                 isActive
                   ? "primary-gradient rounded-lg text-light-900"
                   : "text-dark300_light900"
-              } flex items-center justify-start gap-4 bg-transparent p-4`}
+              } flex items-center justify-start gap-4 rounded-lg bg-transparent p-4 hover:bg-slate-400`}
             >
-              <Image
+              <LoadingImage
                 className={`${isActive ? "" : "invert-colors"}`}
                 src={item.imgURL}
                 alt={item.label}

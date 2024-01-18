@@ -1,9 +1,10 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useTransition } from "react";
 import { Button } from "../ui/button";
 import { formUrlQuery } from "@/lib/utils";
+import { MoveIcon } from "@radix-ui/react-icons";
 
 interface Props {
   pageNumber: number;
@@ -14,6 +15,8 @@ function Pagination({ pageNumber, isNext }: Props) {
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
+
+  const [isPending, startTransition] = useTransition();
 
   const handleNavigation = (type: "prev" | "next") => {
     const nextPageNumber = type === "prev" ? pageNumber - 1 : pageNumber + 1;
@@ -27,7 +30,9 @@ function Pagination({ pageNumber, isNext }: Props) {
       value,
     });
 
-    router.push(newUrl);
+    startTransition(() => {
+      router.push(newUrl, { scroll: false });
+    });
   };
 
   if (!isNext && pageNumber === 1) return null;
@@ -43,7 +48,14 @@ function Pagination({ pageNumber, isNext }: Props) {
       </Button>
 
       <div className="flex items-center justify-center rounded-md bg-primary-500 px-3.5 py-2">
-        <p className="body-semibold text-light-900">{pageNumber}</p>
+        <p className="body-semibold text-light-900">
+          {" "}
+          {!isPending ? (
+            pageNumber
+          ) : (
+            <MoveIcon className="mr-2 h-4 w-4 animate-spin" />
+          )}
+        </p>
       </div>
 
       <Button

@@ -8,15 +8,10 @@ import { TagFilters } from "@/constants/filters";
 import { getAllTags } from "@/lib/actions/tag.action";
 import { SearchParamsProps } from "@/types";
 import { Link } from "lucide-react";
-import React from "react";
+import React, { Suspense } from "react";
+import { TagsListLoading } from "./loading";
 
 const TagsPage = async ({ searchParams }: SearchParamsProps) => {
-  const { tags, isNext } = await getAllTags({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
-
   return (
     <div className="flex flex-col gap-12">
       <h1 className="h1-bold text-dark100_light900">Tags</h1>
@@ -34,6 +29,27 @@ const TagsPage = async ({ searchParams }: SearchParamsProps) => {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
         />
       </div>
+      <Suspense
+        key={searchParams.q + searchParams.filter}
+        fallback={<TagsListLoading />}
+      >
+        <TagsListCon searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+};
+
+export default TagsPage;
+
+async function TagsListCon({ searchParams }) {
+  const { tags, isNext } = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
+  });
+
+  return (
+    <>
       <section className="flex flex-wrap items-center gap-4">
         {tags.length > 0 ? (
           tags.map((tag) => <TagCard key={tag._id} tag={tag} />)
@@ -50,8 +66,6 @@ const TagsPage = async ({ searchParams }: SearchParamsProps) => {
         pageNumber={searchParams.page ? +searchParams.page : 1}
         isNext={isNext}
       />
-    </div>
+    </>
   );
-};
-
-export default TagsPage;
+}

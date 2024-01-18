@@ -12,13 +12,17 @@ import { SearchParamsProps } from "@/types";
 // import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 
-export default async function Home({ searchParams }: SearchParamsProps) {
-  const { questions, isNext } = await getQuestions({
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-    page: searchParams.page ? +searchParams.page : 1,
-  });
+import type { Metadata } from "next";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useDeferredValue } from "react";
+import QuestionList from "@/components/shared/skeletons/QuestionList";
 
+export const metadata: Metadata = {
+  title: "StackOverFlow Clone",
+  description: "blah blah blah",
+};
+
+export default async function Home({ searchParams }: SearchParamsProps) {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -46,6 +50,28 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
       </div>
       <HomeFilters />
+      <Suspense
+        key={searchParams.q + searchParams.filter}
+        fallback={<QuestionList />}
+      >
+        <QuestionsContainer searchParams={searchParams} />
+      </Suspense>
+    </>
+  );
+}
+
+async function QuestionsContainer({ searchParams }) {
+  const q = searchParams.q;
+  const filter = searchParams.filter;
+  const page = searchParams.page ? +searchParams.page : 1;
+  const { questions, isNext } = await getQuestions({
+    searchQuery: q,
+    filter,
+    page,
+  });
+
+  return (
+    <>
       <div className="mt-10 flex flex-col gap-6">
         {questions.length > 0 ? (
           questions.map((question) => (
@@ -73,10 +99,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
-      <Pagination
-        isNext={isNext}
-        pageNumber={searchParams.page ? +searchParams.page : 1}
-      />
+      <Pagination isNext={isNext} pageNumber={page} />
     </>
   );
 }

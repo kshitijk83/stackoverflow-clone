@@ -16,6 +16,7 @@ import Question, { IQuestion } from "@/database/Question.model";
 import Tag, { ITag } from "@/database/Tag.model";
 import Answer from "@/database/Answer.model";
 import { FilterQuery } from "mongoose";
+import { timer } from "../utils";
 
 export async function getUserById(params: GetUserByIdParams) {
   try {
@@ -125,6 +126,7 @@ export async function getAllUsers(params: GetAllUsersParams) {
 
     const totalUsers = await User.countDocuments(query);
     const isNext = page * pageSize < totalUsers;
+    await timer(3000);
     return { users, isNext };
   } catch (err) {
     console.log(err);
@@ -194,6 +196,7 @@ export async function getAllSavedQuestion(params: GetSavedQuestionsParams) {
       throw new Error("User not found");
     }
     const isNext = user.saved.length === pageSize;
+    await timer(3000);
     return { questions: user.saved as any, isNext };
   } catch (err) {
     console.log(err);
@@ -217,6 +220,7 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const totalAnswers = await Answer.find({
       author: user._id,
     }).countDocuments();
+    await timer(3000);
     return { user, totalAnswers, totalQuestions };
   } catch (err) {
     console.log(err);
@@ -237,6 +241,7 @@ export async function getUserQuestions(params: GetUserStatsParams) {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
+    await timer(3000);
     return {
       totalQuestions,
       questions: userQuestions,
@@ -266,6 +271,7 @@ export async function getUserAnswers(params: GetUserStatsParams) {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
+    await timer(3000);
     return {
       totalAnswers,
       answers: userAnswers,
