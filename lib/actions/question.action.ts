@@ -58,7 +58,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       .sort(sortOptions);
 
     const isNext = page * pageSize < totalQuestions;
-    await timer(5000);
+    await timer(1000);
     return { questions, isNext };
   } catch (error) {
     console.log(error);
