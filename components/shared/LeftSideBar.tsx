@@ -41,7 +41,7 @@ const LeftSideBar = () => {
                   : "text-dark300_light900"
               } flex items-center justify-start gap-4 rounded-lg bg-transparent p-4 hover:bg-slate-400`}
             >
-              <LoadingImage
+              <Image
                 className={`${isActive ? "" : "invert-colors"}`}
                 src={item.imgURL}
                 alt={item.label}
